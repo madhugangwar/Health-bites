@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import React, { useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import "../style/CalTracker.css";
 
 const initialData = [
@@ -14,13 +21,50 @@ const initialData = [
 
 function CalTracker() {
   const [caloriesData, setCaloriesData] = useState(initialData);
-  const [todayCalories, setTodayCalories] = useState(caloriesData[caloriesData.length - 1].calories);
+  const [todayCalories, setTodayCalories] = useState(
+    caloriesData[caloriesData.length - 1].calories
+  );
+  const [foodQuery, setFoodQuery] = useState("");
+  const [message, setMessage] = useState("");
 
-  const addCalories = () => {
-    const newCal = Math.floor(Math.random() * 500) + 1000;
-    const newData = [...caloriesData.slice(1), { ...caloriesData[caloriesData.length - 1], calories: newCal }];
-    setCaloriesData(newData);
-    setTodayCalories(newCal);
+  const fetchCalories = async () => {
+    if (!foodQuery.trim()) return;
+
+    try {
+      const res = await fetch(
+        `https://api.api-ninjas.com/v1/nutrition?query=${foodQuery}`,
+        {
+          headers: {
+            "X-Api-Key": "hGKFMxMF/TT6hDc5ncrTvQ==wY8mqX4m9kcCg9P0",
+          },
+        }
+      );
+      const data = await res.json();
+
+      if (data.length > 0) {
+        const foodCalories = Math.round(data[0].calories);
+
+        const newCal = todayCalories + foodCalories;
+        const newData = [
+          ...caloriesData.slice(1),
+          {
+            ...caloriesData[caloriesData.length - 1],
+            calories: newCal,
+          },
+        ];
+
+        setCaloriesData(newData);
+        setTodayCalories(newCal);
+        setMessage(`✅ ${foodQuery} : ${foodCalories} kcal added`);
+      } else {
+        setMessage(`⚠️ Couldn't calculate calories for "${foodQuery}"`);
+      }
+    } catch (error) {
+      console.error("Error fetching calories:", error);
+      setMessage("⚠️ Error fetching data, please try again.");
+    }
+
+    setFoodQuery("");
   };
 
   return (
@@ -33,13 +77,22 @@ function CalTracker() {
           <p>Track your daily and weekly calorie intake</p>
         </section>
 
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Enter food (e.g. 2 apple, rice, paneer)"
+            value={foodQuery}
+            onChange={(e) => setFoodQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && fetchCalories()}
+          />
+          <button onClick={fetchCalories}>Add Food</button>
+        </div>
+
+        {message && <p className="message">{message}</p>}
 
         <div className="glass-card today-calories text-center">
           <h2>Today's Calories</h2>
           <p className="cal-value">{todayCalories} kcal</p>
-          <button className="btn-hover" onClick={addCalories}>
-            Add Random Calories
-          </button>
         </div>
 
         <div className="glass-card weekly-chart">
@@ -49,7 +102,12 @@ function CalTracker() {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="calories" stroke="#10B981" strokeWidth={3} />
+              <Line
+                type="monotone"
+                dataKey="calories"
+                stroke="#10B981"
+                strokeWidth={3}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>

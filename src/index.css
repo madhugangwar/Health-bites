@@ -1,7 +1,7 @@
-/* Global imports */
+
 @import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css');
 
-/* Body */
+
 body, html {
   height: 100%;
   margin: 0;
@@ -10,7 +10,6 @@ body, html {
   overflow-x: hidden;
 }
 
-/* Glassmorphism login box */
 .glassmorphism {
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(12px);
@@ -18,7 +17,7 @@ body, html {
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-/* Login Page Layout */
+
 .login-page {
   position: relative;
   width: 100%;
@@ -29,7 +28,6 @@ body, html {
   overflow: hidden;
 }
 
-/* Centered form container */
 .login-container {
   z-index: 10;
   width: 100%;
@@ -37,7 +35,7 @@ body, html {
   padding: 20px;
 }
 
-/* Password toggle */
+
 .password-toggle {
   position: absolute;
   top: 50%;
@@ -46,13 +44,13 @@ body, html {
   cursor: pointer;
 }
 
-/* Button hover animation */
+
 .btn-hover:hover {
   transform: scale(1.05);
   transition: 0.3s;
 }
 
-/* Moving food icons */
+
 .food-icon {
   position: absolute;
   font-size: 2rem;
@@ -65,7 +63,7 @@ body, html {
   100% { transform: translateY(-20vh) rotate(360deg); }
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .food-icon {
     font-size: 1.5rem;

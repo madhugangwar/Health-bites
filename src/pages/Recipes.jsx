@@ -2,31 +2,28 @@ import React, { useState } from "react";
 import "../style/Recipes.css";
 
 const Recipes = () => {
+  const [query, setQuery] = useState("");
+  const [recipes, setRecipes] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const recipes = [
-    {
-      id: 1,
-      title: "Oats with Fruits",
-      description: "A healthy mix of oats, milk, and seasonal fruits.",
-      image:
-        "https://plus.unsplash.com/premium_photo-1691948105759-b4729bc98bed?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHBvcnJpZGdlfGVufDB8fDB8fHww",
-    },
-    {
-      id: 2,
-      title: "Green Salad",
-      description: "Fresh veggies with olive oil dressing for detox.",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0bysUxWfmP1WAnVO4Z90ph_o44bfMrcD6Hw&s"
-    },
-    {
-      id: 3,
-      title: "Smoothie Bowl",
-      description: "Banana and berries blended with yogurt, topped with seeds.",
-      image:
-        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
-    },
-  ];
+  const searchRecipes = async (customQuery) => {
+    const searchTerm = customQuery || query;
+    if (!searchTerm.trim()) return;
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `https://api.spoonacular.com/recipes/complexSearch?query=${searchTerm}&number=12&addRecipeInformation=true&apiKey=e0bfd6fcd6874f9abdb1702029eb6d14`
+      );
+      const data = await res.json();
+      setRecipes(data.results || []);
+    } catch (err) {
+      console.error("Error fetching recipes:", err);
+      setRecipes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleFavorite = (recipe) => {
     if (favorites.find((fav) => fav.id === recipe.id)) {
@@ -36,6 +33,27 @@ const Recipes = () => {
     }
   };
 
+  const quickSearchItems = [
+    "Paneer",
+    "Lentils",
+    "Chickpeas",
+    "Biryani",
+    "Samosa",
+    "Pakora",
+    "Chaat",
+    "Dosa",
+    "Idli",
+    "Spinach",
+    "Cauliflower",
+    "Okra",
+    "Potato"
+  ];
+
+  const handleQuickSearch = (item) => {
+    setQuery(item);
+    searchRecipes(item);
+  };
+
   return (
     <div className="recipes-page">
       <header className="recipes-header">
@@ -43,35 +61,67 @@ const Recipes = () => {
         <p>Nutritious, tasty & easy-to-make meals for your lifestyle</p>
       </header>
 
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search for a recipe (e.g. chicken, salad)"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && searchRecipes()}
+        />
+        <button onClick={() => searchRecipes()}>Search</button>
+      </div>
+
+      <div className="quick-search container">
+        <h4>🍴 Quick Picks</h4>
+        <div className="quick-buttons">
+          {quickSearchItems.map((item) => (
+            <button
+              key={item}
+              className="quick-btn"
+              onClick={() => handleQuickSearch(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <section className="recipes-section container">
         <div className="row">
-          {recipes.map((recipe) => (
-            <div key={recipe.id} className="col-md-4 col-sm-6 mb-4">
-              <div className="card card-hover h-100">
-                <img
-                  src={recipe.image}
-                  alt={recipe.title}
-                  className="card-img-top"
-                />
-                <div className="card-body text-center">
-                  <h5 className="card-title">{recipe.title}</h5>
-                  <p className="card-text">{recipe.description}</p>
-                  <button
-                    className={`btn ${
-                      favorites.find((fav) => fav.id === recipe.id)
-                        ? "btn-danger"
-                        : "btn-success"
-                    } btn-hover`}
-                    onClick={() => toggleFavorite(recipe)}
-                  >
-                    {favorites.find((fav) => fav.id === recipe.id)
-                      ? "Remove Favorite"
-                      : "Add to Favorites"}
-                  </button>
+          {loading ? (
+            <p>Loading recipes...</p>
+          ) : (
+            recipes.map((recipe) => (
+              <div key={recipe.id} className="col-md-4 col-sm-6 mb-4">
+                <div className="card card-hover h-100">
+                  <img
+                    src={recipe.image}
+                    alt={recipe.title}
+                    className="card-img-top"
+                  />
+                  <div className="card-body text-center">
+                    <h5 className="card-title">{recipe.title}</h5>
+                    <p className="card-text">
+                      {recipe.readyInMinutes} mins | {recipe.servings} servings
+                    </p>
+                    <button
+                      className={`btn ${
+                        favorites.find((fav) => fav.id === recipe.id)
+                          ? "btn-danger"
+                          : "btn-success"
+                      } btn-hover`}
+                      onClick={() => toggleFavorite(recipe)}
+                    >
+                      {favorites.find((fav) => fav.id === recipe.id)
+                        ? "Remove Favorite"
+                        : "Add to Favorites"}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 

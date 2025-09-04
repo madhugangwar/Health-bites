@@ -1,0 +1,117 @@
+.meal-page {
+  position: relative;
+  min-height: 100vh;
+  background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
+  background-size: cover;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.food-icon {
+  position: absolute;
+  font-size: 2rem;
+  animation-name: floatIcon;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes floatIcon {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20vh) rotate(360deg);
+    opacity: 0.5;
+  }
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  width: 100%;
+}
+
+.card-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+}
+
+
+.btn-hover {
+  transition: all 0.2s ease;
+}
+
+.btn-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.list-group-item {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.list-group-item:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.col-md-4 {
+  flex: 0 0 100%; 
+  max-width: 400px; 
+}
+
+
+.glassmorphism, .card-hover {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.list-group, .recharts-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+.hero-section h1, .glassmorphism h2 {
+  color: #0f5132;
+}
+
+.total-calories {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
